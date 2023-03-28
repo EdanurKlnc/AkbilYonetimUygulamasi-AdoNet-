@@ -72,7 +72,7 @@
             // maskedTextBoxAkbilNo
             // 
             maskedTextBoxAkbilNo.Location = new Point(173, 30);
-            maskedTextBoxAkbilNo.Mask = "0000 0000 0000 0000";
+            maskedTextBoxAkbilNo.Mask = "0000000000000000";
             maskedTextBoxAkbilNo.Name = "maskedTextBoxAkbilNo";
             maskedTextBoxAkbilNo.Size = new Size(151, 23);
             maskedTextBoxAkbilNo.TabIndex = 4;
