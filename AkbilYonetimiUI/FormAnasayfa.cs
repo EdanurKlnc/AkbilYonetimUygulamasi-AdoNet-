@@ -26,5 +26,12 @@ namespace AkbilYonetimiUI
             FormAkbiller formAkbiller = new FormAkbiller();
             formAkbiller.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            FormTalimatlar formTalimat = new FormTalimatlar();
+            formTalimat.Show();
+        }
     }
 }
