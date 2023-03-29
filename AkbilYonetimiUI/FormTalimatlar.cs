@@ -46,17 +46,26 @@ namespace AkbilYonetimiUI
             }
         }
 
-        private void TalimatlariDataGrideGetir(bool tumunuGoster = false)
+        private void TalimatlariDataGrideGetir(bool tumunuGoster = false , string akbilNo= null)
         {
             try
             {
+                string kosullar = $"KullaniciId= {GenelIslemler.GirisYapanKullaniciID}";
+                if(cmbBoxAkbiller.SelectedIndex >= 0)
+                {
+                    akbilNo = cmbBoxAkbiller.Text;
+                }
+                if(!string.IsNullOrEmpty(akbilNo))
+                {
+                    kosullar += $" and Akbil like '%{akbilNo}%'";
+                }
                 if (tumunuGoster)
                 {
-                    dataGridViewTalimatlar.DataSource = veriTabaniIslemleri.VeriGetir("KullanicininTalimatlari", kosullar: $"KullaniciId={GenelIslemler.GirisYapanKullaniciID}");
+                    dataGridViewTalimatlar.DataSource = veriTabaniIslemleri.VeriGetir("KullanicininTalimatlari", kosullar:kosullar);
                 }
                 else
                 {
-                    dataGridViewTalimatlar.DataSource = veriTabaniIslemleri.VeriGetir("KullanicininTalimatlari", kosullar: $"KullaniciId={GenelIslemler.GirisYapanKullaniciID} and YuklendiMi=0");
+                    dataGridViewTalimatlar.DataSource = veriTabaniIslemleri.VeriGetir("KullanicininTalimatlari", kosullar:kosullar);
                 }
                 dataGridViewTalimatlar.Columns["Id"].Visible = false;
                 dataGridViewTalimatlar.Columns["Akbil"].Width = 200;
