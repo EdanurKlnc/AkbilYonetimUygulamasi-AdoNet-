@@ -199,10 +199,10 @@ namespace AkbilYntmVeriKatmani
             {
                 using (baglanti)
                 {
-                    string sorgu = $"delete from {tabloAdi}";
+                    string sorgu = $" delete from {tabloAdi} ";
                     if (!string.IsNullOrEmpty(kosullar))
                     {
-                        sorgu += $"where {kosullar}";
+                        sorgu += $" where {kosullar}";
                     }
                     komut.CommandText = sorgu;
                     BaglantiyiAc();
