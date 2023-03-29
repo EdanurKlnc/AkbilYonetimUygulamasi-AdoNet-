@@ -121,16 +121,16 @@ namespace AkbilYntmVeriKatmani
             {
                 //update tabloadi set col= deger...., where kosullar
                 string sorgu = string.Empty, setler = string.Empty;
-                foreach (var item in kolonlar)
+                foreach (var item in kolonlar.Keys)
                 {
-                    setler += $"{item}={kolonlar[item]},";
+                    setler += $"{item}={kolonlar[item]}, ";
                 }
                 setler = setler.Trim().TrimEnd(',');
 
-                sorgu = $"update {tabloAdi} set {setler}";
+                sorgu = $"update {tabloAdi} set {setler} ";
                 if (!string.IsNullOrEmpty(kosullar))
                 {
-                    sorgu += $" where{kosullar}";
+                    sorgu += $" where {kosullar}";
                 }
                 return sorgu;
             }

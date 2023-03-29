@@ -173,19 +173,20 @@
             // 
             contextMenuStrip1.Items.AddRange(new ToolStripItem[] { talimatiYukleToolStripMenuItem, talimatıiptalEtToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(181, 70);
+            contextMenuStrip1.Size = new Size(155, 48);
             // 
             // talimatiYukleToolStripMenuItem
             // 
             talimatiYukleToolStripMenuItem.Name = "talimatiYukleToolStripMenuItem";
-            talimatiYukleToolStripMenuItem.Size = new Size(180, 22);
+            talimatiYukleToolStripMenuItem.Size = new Size(154, 22);
             talimatiYukleToolStripMenuItem.Text = "Talimatı yükle";
+            talimatiYukleToolStripMenuItem.Click += talimatiYukleToolStripMenuItem_Click;
             // 
             // talimatıiptalEtToolStripMenuItem
             // 
             talimatıiptalEtToolStripMenuItem.Image = Properties.Resources.sil;
             talimatıiptalEtToolStripMenuItem.Name = "talimatıiptalEtToolStripMenuItem";
-            talimatıiptalEtToolStripMenuItem.Size = new Size(180, 22);
+            talimatıiptalEtToolStripMenuItem.Size = new Size(154, 22);
             talimatıiptalEtToolStripMenuItem.Text = "Talimatı İptal Et";
             talimatıiptalEtToolStripMenuItem.Click += talimatıiptalEtToolStripMenuItem_Click;
             // 

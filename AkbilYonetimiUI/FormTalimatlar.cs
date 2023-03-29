@@ -1,6 +1,6 @@
 ﻿using AkbilYntmIsKatmani;
 using AkbilYntmVeriKatmani;
-
+using System.Collections;
 
 namespace AkbilYonetimiUI
 {
@@ -108,10 +108,12 @@ namespace AkbilYonetimiUI
                     MessageBox.Show("Yükleme miktarı girişi uygun formatta olmalıdır! ");
                     return;
                 }
+
+
                 Dictionary<string, object> kolonlar = new Dictionary<string, object>();
                 kolonlar.Add("EklenmeTarihi", $"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}'");
                 kolonlar.Add("AkbilID", $"'{cmbBoxAkbiller.SelectedValue}'");
-                kolonlar.Add("YuklenecekTutar", tutar);
+                kolonlar.Add("YuklenecekTutar", txtYuklenecekTutar.Text.Trim().Replace(",","."));
                 kolonlar.Add("YuklendiMi", "0");
                 kolonlar.Add("YuklenmeTarihi", "null");
                 string talimatinsert = veriTabaniIslemleri.VeriEklemeCumlesiOlustur(
@@ -156,6 +158,9 @@ namespace AkbilYonetimiUI
                 txtYuklenecekTutar.Clear();
                 groupBoxYukleme.Enabled = false;
             }
+            BekleyenTalimatSayisiniGetir();
+            TalimatlariDataGrideGetir(checkBoxTumunuGoster.Checked);
+
         }
 
         private void anaMenuToolStripMenuItem_Click(object sender, EventArgs e)
@@ -210,14 +215,64 @@ namespace AkbilYonetimiUI
             {
                 if ((bool)item.Cells["YuklendiMi"].Value)
                 {
-                    MessageBox.Show($"Dikkat {item.Cells["AkbilNo"]} akbilin {item.Cells["YuklenecekTutar"]} liralık yüklemesi yapılmıştır. Yüklenen talimat iptal edilemez/silinemez. \nİşlemlerinize devam etmek için tamama basınız.");
+                    MessageBox.Show($"Dikkat {item.Cells["Akbil"].Value} {item.Cells["YuklenecekTutar"].Value} liralık yüklemesi yapılmıştır. Yüklenen talimat iptal edilemez/silinemez. \nİşlemlerinize devam etmek için tamama basınız.");
                     continue;
                 }
-                sayac += veriTabaniIslemleri.VeriSil("Talimatlar",$"Id = {item.Cells["Id"].Value}");
+                sayac += veriTabaniIslemleri.VeriSil("Talimatlar", $"Id = {item.Cells["Id"].Value}");
             }
             MessageBox.Show($"{sayac} adet talimat iptal edilmiştir");
             TalimatlariDataGrideGetir();
             BekleyenTalimatSayisiniGetir();
+        }
+        private void talimatiYukleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int sayac = 0;
+                foreach (DataGridViewRow item in dataGridViewTalimatlar.SelectedRows)
+                {
+                    if ((bool)item.Cells["YuklendiMi"].Value)
+                    {
+                        continue;
+                    }
+                    //talimatlar tablosunu güncelle
+                    Hashtable talimatkolonlar = new Hashtable();
+                    talimatkolonlar.Add("YuklendiMi", 1);
+                    talimatkolonlar.Add("YuklenmeTarihi" ,$"'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}'");
+                    string talimatGuncelleme = veriTabaniIslemleri.VeriGuncellemeCumlesiOlustur("Talimatlar", talimatkolonlar, $"Id={item.Cells["Id"].Value}");
+
+                    if (veriTabaniIslemleri.KomutIsle(talimatGuncelleme) > 0)
+                    {
+                        // akbilin mevcut bakiyesini öğren
+                        decimal bakiye = Convert.ToDecimal(
+                        veriTabaniIslemleri.VeriOku("Akbiller" ,new string[] { "Bakiye" }, $"AkbilNo='{item.Cells["Akbil"].Value.ToString()?.Substring(0 , 16)}'")["Bakiye"]);
+
+                        //Yukarıdaki kodun farklı yazımı;
+                        //var sonuc = veriTabaniIslemleri.VeriOku("Akbiller", new string[] { "Bakiye" },
+                        //    $"AkbilNo='{item.Cells["Akbil"].Value.ToString()?.Substring(0, 15)}'");
+                        //decimal bakiye = (decimal)sonuc["Bakiye"];
+
+
+                        // akbil bakiyesini güncelle
+                        Hashtable akbilkolon = new Hashtable();
+                        var sonBakiye = (bakiye + (decimal)item.Cells["YuklenecekTutar"].Value).ToString().Replace(",",".");
+                        akbilkolon.Add("Bakiye", sonBakiye);
+                       // akbilkolon.Add("Bakiye", bakiye + (decimal)item.Cells["YuklenecekTutar"].Value);
+                        string akbilGuncelle = veriTabaniIslemleri.VeriGuncellemeCumlesiOlustur("Akbiller", akbilkolon, 
+                            $"AkbilNo ='{item.Cells["Akbil"].Value.ToString()?.Substring(0, 16)}'");
+
+                        sayac += veriTabaniIslemleri.KomutIsle(akbilGuncelle);
+                    }
+                }
+                MessageBox.Show($"{sayac} adet talimat akbile yüklendi");
+                TalimatlariDataGrideGetir();
+                BekleyenTalimatSayisiniGetir();
+
+            }
+            catch (Exception hata)
+            {
+                MessageBox.Show("Hata" + hata.Message);
+            }
         }
     }
 }
